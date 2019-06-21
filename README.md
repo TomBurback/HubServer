@@ -1,6 +1,6 @@
 # HubServer
 
 ## Dependencies
-python3
-opencv-python
-playsound
+python3  
+opencv-python  
+playsound  

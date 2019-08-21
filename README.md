@@ -4,3 +4,4 @@
 python3  
 opencv-python  
 playsound  
+pySerial

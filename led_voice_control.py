@@ -43,7 +43,7 @@ while True:
         result = handle.process(pcm)
         if num_keywords == 1 and result:
             print('[%s] detected keyword' % str(datetime.now()))
-
+            
 #Open COM4 port
 ser_port = serial.Serial('COM4')
 

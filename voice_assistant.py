@@ -23,6 +23,9 @@ import serial
 #Speech recognition
 import speech_recognition as sr
 
+# Wit.ai api access token
+wit_access_token = 'ZPLG244YIBKZODROIERY7KVRZHE2W37U'
+
 #Wake word detection
 import pyaudio
 import struct
@@ -98,7 +101,7 @@ try:
 					audioData = r.listen(source)
 					#Try and recognize it
 					try:
-						text = r.recognize_google(audioData)
+						text = r.recognize_wit(audioData, wit_access_token)
 						print("You said " + text)
 						if("light" in text and "on" in text):
 							ser_port.write(b'1')

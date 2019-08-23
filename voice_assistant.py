@@ -15,6 +15,11 @@
 #	listens to whatever command is given afterword. It
 #	uses serial communication to send a signal to an Arduino 
 # 	that can be programmed and hooked to whatever one desires.
+#
+# Robot_blip_2-Marianne_Gagnon-299056732.mp3 
+# used from http://soundbible.com/1669-Robot-Blip-2.html under the
+# https://creativecommons.org/licenses/by/3.0/us/ license. No changes
+# were made to the file.
 ########################################################################
 
 #Hardware communication
@@ -32,27 +37,40 @@ import struct
 import os
 import platform
 
+#Text to speech
+import pyttsx3
+
 #Misc
 import sys
 from datetime import datetime
+from playsound import playsound
+
+#Instantiate text to speech engine
+engine = pyttsx3.init()
+
+#Welcome the user and announce checks.
+engine.say("Welcome. Start up sequence initiated.")
+engine.runAndWait()
 
 #Instantiate Speech Recognizer
+engine.say("Initializing speech recognition.")
+engine.runAndWait()
 r = sr.Recognizer()
-
-#Calibrate microphone
-source = sr.Microphone()
-with sr.Microphone() as source:
-	print("Please wait. Calibrating microphone...")  
-	# listen for 5 seconds and create the ambient noise energy level  
-	r.adjust_for_ambient_noise(source, duration=5)  
-	print("Microphone calibrated.")
+engine.say("OK.")
+engine.runAndWait()
 
 #!!! MUST BE UPDATED FOR SERVER !!!#
 try:
 	#Open COM port
+	engine.say("Opening communication port.")
+	engine.runAndWait()
 	ser_port = serial.Serial('COM4') #Must be updated to match COM port number of server
+	engine.say("OK.")
+	engine.runAndWait()
 except serial.serialutil.SerialException:
 	print("[ERROR] Could not open COM port! Arduino is likely disconnected! Exiting...")
+	engine.say("[ERROR] Could not open communication port! Arduino is likely disconnected! Exiting...")
+	engine.runAndWait()
 	sys.exit()
 #!!! MUST BE UPDATED FOR SERVER !!!#
 
@@ -66,14 +84,45 @@ model_file_path = 'C:/Users/burbacktg/Documents/Porcupine/lib/common/porcupine_p
 keyword_file_paths = ['C:/Users/burbacktg/Documents/Porcupine/keywords/porcupine_windows.ppn']
 sensitivities = [0.5]
 #!!! MUST BE UPDATED FOR SERVER !!!#
+try:
+	#Link to Porcupine python binding. Necessary to import Porcupine.
+	sys.path.append(os.path.join(os.path.dirname(__file__), PATH_TO_PYTHON_BINDING))
+	#Import the Porcupine wake word detection engine.
+	engine.say("Importing Porcupine wake word detection engine!")
+	engine.runAndWait()
+	from porcupine import Porcupine
+	engine.say("OK.")
+	engine.runAndWait()
+except ModuleNotFoundError:
+	print("[ERROR] Can't find Porcupine module! Check PATH_TO_PYTHON_BINDING string. Exiting...")
+	engine.say("[ERROR] Can't find Porcupine module! Check PATH TO PYTHON BINDING string. Exiting... ")
+	engine.runAndWait()
+	sys.exit()
 
-#Link to Porcupine python binding. Necessary to import Porcupine.
-sys.path.append(os.path.join(os.path.dirname(__file__), PATH_TO_PYTHON_BINDING))
-#Import the Porcupine wake word detection engine.
-from porcupine import Porcupine
+try:
+	#Instantiate Porcupine using provided file paths.
+	engine.say("Initializing Porcupine wake word detection engine!")
+	engine.runAndWait()
+	handle = Porcupine(library_path, model_file_path, keyword_file_paths=keyword_file_paths, sensitivities=sensitivities)
+	engine.say("OK.")
+	engine.runAndWait()
+except IOError:
+	print("[ERROR] Can't instantiate Porcupine! Check library, model, and keyword paths. Check sensitivities. Exiting...")
+	engine.say("[ERROR] Can't instantiate Porcupine! Check library, model, and keyword paths. Check sensitivities. Exiting...")
+	engine.runAndWait()
+	sys.exit()
 
-#Instantiate Porcupine using provided file paths.
-handle = Porcupine(library_path, model_file_path, keyword_file_paths=keyword_file_paths, sensitivities=sensitivities)
+#Calibrate microphone
+source = sr.Microphone()
+with sr.Microphone() as source:
+	print("Silence please. Calibrating microphone...")  
+	engine.say("Silence please. Calibrating microphone...")
+	engine.runAndWait()
+	# listen for 5 seconds and create the ambient noise energy level  
+	r.adjust_for_ambient_noise(source, duration=5)  
+	print("Microphone calibrated.")
+	engine.say("Microphone calibrated.")
+	engine.runAndWait()
 
 try:
 	#Instantiate pyaudio
@@ -86,6 +135,8 @@ try:
 			input=True,
 			frames_per_buffer=handle.frame_length)
 	print('Listening for keyword porcupine...')
+	engine.say('Listening for keyword porcupine...')
+	engine.runAndWait()
 
 	#Main loop
 	while True:
@@ -95,6 +146,7 @@ try:
 			result = handle.process(pcm)
 			if result:
 				print('[%s] detected keyword' % str(datetime.now()))
+				playsound("Robot_blip_2-Marianne_Gagnon-299056732.mp3")
 				with sr.Microphone() as source:
 					print("Listening...")
 					#Grab microphone data
@@ -102,13 +154,22 @@ try:
 					#Try and recognize it
 					try:
 						text = r.recognize_wit(audioData, wit_access_token)
-						print("You said " + text)
+						print("User said " + text)
 						if("light" in text and "on" in text):
+							print("Turning light on!")
+							engine.say("Turning light on!")
+							engine.runAndWait()
 							ser_port.write(b'1')
 						elif("light" in text and "off" in text):
+							print("Turning light off!")
+							engine.say("Turning light off!")
+							engine.runAndWait()
 							ser_port.write(b'0')
 					except:
 						print("Sorry, I didn't get that!")
+						engine.say("Sorry, I didn't get that!")
+						engine.runAndWait()
+				print('\nListening for keyword porcupine...')
 				
 				
 except KeyboardInterrupt:

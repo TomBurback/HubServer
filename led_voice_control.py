@@ -8,8 +8,6 @@ import os
 import platform
 import sys
 
-import soundfile
-
 #!!! MUST BE UPDATED FOR SERVER !!!#
 PATH_TO_PYTHON_BINDING = 'C:/Users/burbacktg/Documents/Porcupine/binding/python'
 library_path = 'C:/Users/burbacktg/Documents/Porcupine/lib/windows/amd64/libpv_porcupine.dll' # Path to Porcupine's C library available under lib/${SYSTEM}/${MACHINE}/

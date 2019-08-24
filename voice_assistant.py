@@ -40,6 +40,12 @@ import platform
 #Text to speech
 import pyttsx3
 
+#Search Engines
+import wolframalpha
+
+#Wolfram Alpha api access token
+wolframalpha_access_token = '6GKWTW-YETULJ3QT6'
+
 #Misc
 import sys
 from datetime import datetime
@@ -49,6 +55,7 @@ from playsound import playsound
 engine = pyttsx3.init()
 
 #Welcome the user and announce checks.
+print("[HubServer Voice Assistant] v. 1.0\nWelcome! Starting up...")
 engine.say("Welcome. Start up sequence initiated.")
 engine.runAndWait()
 
@@ -112,6 +119,13 @@ except IOError:
 	engine.runAndWait()
 	sys.exit()
 
+#Instantiate Wolfram Alpha API	
+engine.say("Initializing Wolfram Alpha!")
+engine.runAndWait()
+wolf_client = wolframalpha.Client(wolframalpha_access_token)
+engine.say("OK.")
+engine.runAndWait()
+
 #Calibrate microphone
 source = sr.Microphone()
 with sr.Microphone() as source:
@@ -165,12 +179,17 @@ try:
 							engine.say("Turning light off!")
 							engine.runAndWait()
 							ser_port.write(b'0')
+						else: #Query Wolfram Alpha for answer to potential question
+							res = wolf_client.query(text)
+							output = next(res.results).text
+							print(output)
+							engine.say(output)
+							engine.runAndWait()
 					except:
 						print("Sorry, I didn't get that!")
 						engine.say("Sorry, I didn't get that!")
 						engine.runAndWait()
 				print('\nListening for keyword porcupine...')
-				
 				
 except KeyboardInterrupt:
 		print("Exiting!")

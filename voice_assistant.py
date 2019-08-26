@@ -174,12 +174,12 @@ try:
 							print("Turning light on!")
 							engine.say("Turning light on!")
 							engine.runAndWait()
-							ser_port.write(b'1')
+							ser_port.write(b'11')
 						elif("light" in text and "off" in text):
 							print("Turning light off!")
 							engine.say("Turning light off!")
 							engine.runAndWait()
-							ser_port.write(b'0')
+							ser_port.write(b'10')
 						else: 
 							try: #Query Wolfram Alpha for answer to potential question
 								res = wolf_client.query(text)

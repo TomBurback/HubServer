@@ -42,6 +42,7 @@ import pyttsx3
 
 #Search Engines
 import wolframalpha
+import wikipedia
 
 #Wolfram Alpha api access token
 wolframalpha_access_token = '6GKWTW-YETULJ3QT6'
@@ -179,12 +180,20 @@ try:
 							engine.say("Turning light off!")
 							engine.runAndWait()
 							ser_port.write(b'0')
-						else: #Query Wolfram Alpha for answer to potential question
-							res = wolf_client.query(text)
-							output = next(res.results).text
-							print(output)
-							engine.say(output)
-							engine.runAndWait()
+						else: 
+							try: #Query Wolfram Alpha for answer to potential question
+								res = wolf_client.query(text)
+								output = next(res.results).text
+								print("Wolfram Alpha: ")
+								print(output)
+								engine.say(output)
+								engine.runAndWait()
+							except: #If Wolfram Alpha can not answer, query Wikipedia
+								output = wikipedia.summary(text)
+								print("Wikipedia: ")
+								print(output)
+								engine.say(output)
+								engine.runAndWait()
 					except:
 						print("Sorry, I didn't get that!")
 						engine.say("Sorry, I didn't get that!")

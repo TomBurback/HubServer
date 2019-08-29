@@ -198,7 +198,7 @@ try:
 							speak("Turning light off!")
 							ser_port.write(b'10')
 						#If "light" or "on" or "start" and "fireplace" is heard, launch the fireplace
-						elif(("light" in text or "on" in text or "start" in text) and "fireplace"):
+						elif(("light" in text or "on" in text or "start" in text) and "fireplace" in text):
 							#If the fireplace_instance isn't None, the fireplace is already running
 							if(fireplace_instance != None):
 								speak("The fireplace is already running!")
@@ -208,7 +208,7 @@ try:
 								#Update the fireplace_instance to the current instance of VLC
 								fireplace_instance = launch_vlc_with_file(PATH_TO_FIREPLACE_VIDEO)
 						#If "extinguish" or "off" or "stop" and "fireplace" is heard, close the fireplace
-						elif(("extinguish" in text or "off" in text or "stop" in text) and "fireplace"):
+						elif(("extinguish" in text or "off" in text or "stop" in text) and "fireplace" in text):
 							#If the fireplace_instance is None, the fireplace isn't running
 							if(fireplace_instance == None):
 								speak("The fireplace is not currently running!")

@@ -22,5 +22,7 @@ txt = StringVar()
 txt.set(time.strftime("%H:%M:%S"))
 lbl = ttk.Label(root, textvariable=txt, font=fnt, foreground="cyan", background="black")
 lbl.place(relx=0.5, rely=0.5, anchor=CENTER)
+#Make cursor invisible
+root.config(cursor='none')
 
 root.mainloop()

@@ -98,15 +98,15 @@ r = sr.Recognizer()
 speak("OK.")
 
 #Open communication with the Arduino over serial
-try:
-	#Open COM port
-	speak("Opening communication port.")
-	ser_port = serial.Serial(COM_PORT) #Must be updated to match COM port number of server
-	speak("OK.")
-except serial.serialutil.SerialException:
-	print("[ERROR] Could not open COM port! Arduino is likely disconnected! Exiting...")
-	speak("[ERROR] Could not open communication port! Arduino is likely disconnected! Exiting...")
-	sys.exit()
+#try:
+#	#Open COM port
+#	speak("Opening communication port.")
+#	ser_port = serial.Serial(COM_PORT) #Must be updated to match COM port number of server
+#	speak("OK.")
+#except serial.serialutil.SerialException:
+#	print("[ERROR] Could not open COM port! Arduino is likely disconnected! Exiting...")
+#	speak("[ERROR] Could not open communication port! Arduino is likely disconnected! Exiting...")
+#	sys.exit()
 
 #Try to import Porcupine. If error is detected, double check Porcupine wake word detection dependencies at the top of the program!
 try:
@@ -191,12 +191,12 @@ try:
 						if("light" in text and "on" in text):
 							print("Turning light on!")
 							speak("Turning light on!")
-							ser_port.write(b'11')
+#							ser_port.write(b'11')
 						#If "light" and "off" are spoken, turn the LED off
 						elif("light" in text and "off" in text):
 							print("Turning light off!")
 							speak("Turning light off!")
-							ser_port.write(b'10')
+#							ser_port.write(b'10')
 						#If "light" or "on" or "start" and "fireplace" is heard, launch the fireplace
 						elif(("light" in text or "on" in text or "start" in text) and "fireplace" in text):
 							#If the fireplace_instance isn't None, the fireplace is already running

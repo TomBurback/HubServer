@@ -30,6 +30,11 @@ PATH_TO_VLC_EXECUTABLE = "C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe"
 PATH_TO_FIREPLACE_VIDEO = "C:\\Users\\burbacktg\\Documents\\HubServer\\fireplace.mp4"
 #!!! MUST BE UPDATED FOR SERVER !!!#
 #
+# !!!ALERT!!!: PATH_TO_CLOCK must be set to clock.py.
+#!!! MUST BE UPDATED FOR SERVER !!!#
+PATH_TO_CLOCK = "C:\\Users\\burbacktg\\Documents\\HubServer\\clock.py"
+#!!! MUST BE UPDATED FOR SERVER !!!#
+#
 # Description:
 #	This program monitors for the word "Porcupine" and 
 #	listens to whatever command is given afterword. It
@@ -64,6 +69,13 @@ import pyttsx3
 import wolframalpha
 import wikipedia
 
+#Clock
+import threading
+from tkinter import *
+from tkinter import ttk
+from tkinter import font
+import time
+
 #Wolfram Alpha api access token
 wolframalpha_access_token = '6GKWTW-YETULJ3QT6'
 
@@ -87,6 +99,10 @@ def speak(phrase):
 def launch_vlc_with_file(file_path):
 	print("Launching " + file_path + " in VLC!")
 	return subprocess.Popen(PATH_TO_VLC_EXECUTABLE + " --fullscreen " + " --repeat " + file_path)
+
+def start_clock(PATH_TO_CLOCK):
+	print("Launching clock!")
+	return subprocess.Popen("python " + PATH_TO_CLOCK)
 
 #Welcome the user and announce checks.
 print("[HubServer Voice Assistant] v. 1.0\nWelcome! Starting up...")
@@ -164,6 +180,9 @@ try:
 	#None if not currently running
 	fireplace_instance = None
 	
+	#Clock
+	clock_instance = start_clock(PATH_TO_CLOCK)
+	
 	#Main loop
 	while True:
 			#Read from audio stream
@@ -207,6 +226,10 @@ try:
 								speak("OK!")
 								#Update the fireplace_instance to the current instance of VLC
 								fireplace_instance = launch_vlc_with_file(PATH_TO_FIREPLACE_VIDEO)
+								
+								#STOP CLOCK
+								clock_instance.terminate()
+								clock_instance = None
 						#If "extinguish" or "off" or "stop" and "fireplace" is heard, close the fireplace
 						elif(("extinguish" in text or "off" in text or "stop" in text) and "fireplace" in text):
 							#If the fireplace_instance is None, the fireplace isn't running
@@ -219,6 +242,11 @@ try:
 								fireplace_instance.terminate()
 								#Set the fireplace_instance to None to show the fireplace is no longer running
 								fireplace_instance = None
+								
+								#START CLOCK
+								clock_instance = start_clock(PATH_TO_CLOCK)
+						elif("nevermind" in text or "stop" in text or "cancel" in text or "forget it" in text):
+							print("OK!")
 						else: 
 							try: #Query Wolfram Alpha for answer to potential question
 								res = wolf_client.query(text)

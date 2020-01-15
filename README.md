@@ -4,6 +4,6 @@
 python3  
 opencv-python  
 playsound  
-pySerial
-pyaudio
-SpeechRecognition
+pySerial  
+pyaudio  
+SpeechRecognition  

@@ -7,3 +7,4 @@ playsound
 pySerial  
 pyaudio  
 SpeechRecognition  
+soundfile  
